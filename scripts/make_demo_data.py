@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import os
 import random
 from typing import Tuple
@@ -39,9 +40,16 @@ def generate_ad_image(size: Tuple[int, int]) -> Image.Image:
 
 
 def main() -> None:
-    root = "/workspace/data_demo"
-    img_size = (224, 224)
-    splits = {"train": 24, "val": 8}
+    parser = argparse.ArgumentParser(description="Create a tiny synthetic demo dataset")
+    parser.add_argument("--root", type=str, default="/workspace/data_demo", help="Root folder where train/ and val/ will be created")
+    parser.add_argument("--img-size", type=int, default=224, help="Image size (square)")
+    parser.add_argument("--train-count", type=int, default=24, help="Images per class in train split")
+    parser.add_argument("--val-count", type=int, default=8, help="Images per class in val split")
+    args = parser.parse_args()
+
+    root = args.root
+    img_size = (args.img_size, args.img_size)
+    splits = {"train": args.train_count, "val": args.val_count}
     classes = ["CN", "AD"]
 
     for split, count in splits.items():

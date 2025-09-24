@@ -101,4 +101,32 @@ python -m alz_ai.infer \
 - This is a baseline for experimentation. For clinical use, rigorous validation and regulatory considerations are required.
 - Consider domain-specific preprocessing (e.g., skull-stripping, intensity normalization) before training.
 - You can swap the backbone in `alz_ai/model.py` to larger models like ResNet50 or ViT if you have more data and compute.
+
+### 9) Single-folder local workflow
+If you want everything under a single directory (data + outputs), do this on your machine:
+```bash
+# 1) Create demo data under one folder
+python scripts/make_demo_data.py --root ./alz_single
+
+# 2) Train, writing outputs inside the same folder
+python -m alz_ai.train \
+  --data-dir ./alz_single \
+  --output-dir ./alz_single \
+  --epochs 10 \
+  --batch-size 32 \
+  --lr 3e-4 \
+  --patience 5
+
+# 3) Evaluate using the checkpoint saved in the same folder
+python -m alz_ai.evaluate \
+  --data-dir ./alz_single \
+  --split val \
+  --checkpoint ./alz_single/best.pt \
+  --output-dir ./alz_single
+
+# 4) Inference
+python -m alz_ai.infer \
+  --image ./alz_single/val/AD/ad_000.png \
+  --checkpoint ./alz_single/best.pt
+```
 # calculator-using-python
